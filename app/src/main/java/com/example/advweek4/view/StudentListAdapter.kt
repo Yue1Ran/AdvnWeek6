@@ -3,10 +3,15 @@ package com.example.advweek4.view
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+
+import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.navigation.Navigation
+import androidx.navigation.R
 import androidx.recyclerview.widget.RecyclerView
 import com.example.advweek4.databinding.StudentListItemBinding
 import com.example.advweek4.model.Student
+import com.example.advweek4.util.loadImage
 
 class StudentListAdapter(val studentList:ArrayList<Student>):RecyclerView.Adapter<StudentListAdapter.StudentViewHolder>()
 {
@@ -29,6 +34,10 @@ class StudentListAdapter(val studentList:ArrayList<Student>):RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
+        var imageView = holder.itemView.findViewById<ImageView>(R.id.imageProfile)
+        var progressBar = holder.itemView.findViewById<ProgressBar>(R.id.progressBar)
+        imageView.loadImage(studentList[position].photoUrl, progressBar)
+
         holder.binding.textID.text = studentList[position].id
         holder.binding.textFullName.text = studentList[position].name
 

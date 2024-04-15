@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.advweek4.R
-import com.example.advweek4.model.StudentListAdapter
+import com.example.advweek4.databinding.FragmentStudentListBinding
+
 import com.example.advweek4.viewmodel.StudentListViewModel
 
 class StudentListFragment : Fragment() {
     private val studentListViewModel: StudentListViewModel by viewModels()
     private val studentListAdapter = StudentListAdapter(arrayListOf())
+    private lateinit var binding: FragmentStudentListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,21 +32,29 @@ class StudentListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<RecyclerView>(R.id.recyclerViewStudent).apply {
-            adapter = studentListAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+//        view.findViewById<RecyclerView>(R.id.recView).apply {
+//            adapter = studentListAdapter
+//            layoutManager = LinearLayoutManager(requireContext())
+//        }
+//
+//        view.findViewById<SwipeRefreshLayout>(R.id.refreshLayout).apply {
+//            setOnRefreshListener {
+//                studentListViewModel.refresh()
+//                this.isRefreshing = false
+//            }
+//        }
+        binding.refreshLayout.setOnRefreshListener {
+            binding.recView.visibility = View.GONE
+            binding.textError.visibility = View.GONE
+            binding.progressLoad.visibility = View.VISIBLE
+            studentListViewModel.refresh()
+            binding.refreshLayout.isRefreshing = false
         }
 
-        view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshStudent).apply {
-            setOnRefreshListener {
-                studentListViewModel.refresh()
-                this.isRefreshing = false
-            }
-        }
 
         observeViewModel()
 
-        studentListViewModel.refresh()
+        //studentListViewModel.refresh()
     }
 
     private fun observeViewModel() {
@@ -54,8 +64,8 @@ class StudentListFragment : Fragment() {
 
         studentListViewModel.studentsLoading.observe(viewLifecycleOwner) { loading ->
             Log.d("ViewModelObserve", "loading: $loading")
-            val recyclerView = view?.findViewById<RecyclerView>(R.id.recyclerViewStudent)
-            val progressBar = view?.findViewById<ProgressBar>(R.id.progressIndicator)
+            val recyclerView = view?.findViewById<RecyclerView>(R.id.recView)
+            val progressBar = view?.findViewById<ProgressBar>(R.id.progressBar)
 
             if (loading) {
                 recyclerView?.visibility = View.GONE
